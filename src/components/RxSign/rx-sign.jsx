@@ -28,6 +28,7 @@ import {
   storeMedDosageAmount, storeDispenseRequest, storeDate, toggleDate,
   takeSuggestion, signOrder,
 } from '../../actions/medication-sign-actions';
+import { storeUserCondition } from '../../actions/medication-select-actions';
 
 import * as types from '../../actions/action-types';
 
@@ -89,6 +90,10 @@ const propTypes = {
      * Function to signal a chosen medication
      */
   chooseMedication: PropTypes.func.isRequired,
+  /**
+     * Function to signal a chosen condition
+     */
+  chooseCondition: PropTypes.func.isRequired,
   /**
      * Function to signal a change in the dosage instructions (amount or frequency)
      */
@@ -413,6 +418,7 @@ const mapStateToProps = (state) => ({
   medicationInstructions: state.medicationState.medicationInstructions,
   dispenseRequest: state.medicationState.dispenseRequest,
   prescriptionDates: state.medicationState.prescriptionDates,
+  selectedConditionCode: state.medicationState.selectedConditionCode,
 });
 
 const mapDispatchToProps = (dispatch) => (
@@ -422,6 +428,9 @@ const mapDispatchToProps = (dispatch) => (
     },
     chooseMedication: (medication) => {
       dispatch(storeUserChosenMedication(medication));
+    },
+    chooseCondition: (condition) => {
+      dispatch(storeUserCondition(condition));
     },
     updateDosageInstructions: (amount, frequency) => {
       dispatch(storeMedDosageAmount(amount, frequency));

@@ -105,17 +105,26 @@ export class ContextView extends Component {
       contextToggledClass = styles['context-open'];
     }
 
+    const dropdownServices = this.createDropdownServices();
+    const hasServices = dropdownServices.length > 0;
+
     return (
       <div className={cx(styles.container, contextToggledClass)}>
         <div className={styles['wrap-context']}>
           <h1 className={styles.title}>CDS Developer Panel</h1>
           <Field label="Select a Service">
-            <Select
-              placeholder={serviceInContext}
-              value={serviceInContext}
-              options={this.createDropdownServices()}
-              onChange={this.onSelectChange}
-            />
+            {hasServices ? (
+              <Select
+                placeholder={serviceInContext}
+                value={serviceInContext}
+                options={dropdownServices}
+                onChange={this.onSelectChange}
+              />
+            ) : (
+              <div style={{ padding: '8px', color: '#666', fontStyle: 'italic' }}>
+                No services configured for this hook. Add a CDS service that supports the current hook to see it here.
+              </div>
+            )}
           </Field>
           <ExchangePanel
             panelHeader=" Request"

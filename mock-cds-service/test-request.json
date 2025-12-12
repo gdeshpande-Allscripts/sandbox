@@ -1,0 +1,25 @@
+{
+  "hookInstance": "19a39259-acc7-41ce-80ee-ca28375f30af",
+  "hook": "order-sign",
+  "fhirServer": "https://launch.smarthealthit.org/v/r2/fhir",
+  "context": {
+    "patientId": "smart-1288992",
+    "userId": "Practitioner/COREPRACTITIONER1",
+    "draftOrders": {
+      "resourceType": "Bundle",
+      "entry": [
+        {
+          "resource": {
+            "resourceType": "MedicationOrder",
+            "id": "order-123",
+            "status": "draft",
+            "patient": {
+              "reference": "Patient/smart-1288992"
+            },
+            "dateWritten": "2025-12-12"
+          }
+        }
+      ]
+    }
+  }
+}
