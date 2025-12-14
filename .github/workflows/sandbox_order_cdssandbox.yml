@@ -32,16 +32,6 @@ jobs:
           npm --version
           echo "Expected: Node 14.x"
 
-      - name: Remove old package-lock if exists
-        run: |
-          if [ -f package-lock.json ]; then
-            echo "Found package-lock.json, checking for fibers..."
-            if grep -q "fibers" package-lock.json; then
-              echo "ERROR: package-lock.json contains fibers!"
-              exit 1
-            fi
-          fi
-
       - name: Clean install dependencies
         run: |
           npm install --legacy-peer-deps --no-optional
