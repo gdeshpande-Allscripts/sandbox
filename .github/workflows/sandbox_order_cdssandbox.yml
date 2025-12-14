@@ -23,6 +23,11 @@ jobs:
         with:
           node-version: '14.x'
 
+      - name: Verify Node.js version
+        run: |
+          node --version
+          npm --version
+
       - name: npm install, build, and test
         run: |
           npm install --legacy-peer-deps
