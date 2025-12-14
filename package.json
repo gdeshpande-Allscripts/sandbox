@@ -40,7 +40,6 @@
     "debounce": "^1.2.0",
     "debounce-promise": "^3.1.2",
     "fast-deep-equal": "^2.0.1",
-    "fibers": "^5.0.3",
     "html-webpack-plugin": "^5.6.0",
     "identity-obj-proxy": "^3.0.0",
     "immer": "^3.2.0",
