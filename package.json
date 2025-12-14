@@ -2,9 +2,9 @@
   "name": "cds-hooks-sandbox",
   "version": "0.1.0",
   "description": "A SPA tool that simulates the CDS Hooks standard on a mock-ehr system",
-  "main": "build/bundle.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node scripts/express/app.js",
+    "start": "node server.js",
     "dev": "webpack-dev-server --config webpack.config.dev.js",
     "compile:heroku": "webpack --config webpack.config.prod.js --progress",
     "build": "webpack --config webpack.config.prod.js --progress",
@@ -144,6 +144,10 @@
       "/store.js"
     ],
     "testEnvironment": "jest-environment-jsdom-global"
+  },
+  "engines": {
+    "node": "14.x",
+    "npm": ">=6.0.0"
   },
   "browserslist": {
     "production": [
