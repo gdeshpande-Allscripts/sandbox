@@ -44,25 +44,49 @@ app.post('/cds-services/medication-order-sign-advisor', (req, res) => {
 
   const cards = [];
 
-  // Example: Check if there's a draft medication order
+  // Example: Check if there's a draft order (medication or service)
   if (context && context.draftOrders && context.draftOrders.entry) {
-    // Support both MedicationRequest and MedicationOrder resource types
-    const medicationOrders = context.draftOrders.entry.filter(
+    // Support MedicationRequest, MedicationOrder, and ServiceRequest resource types
+    const orders = context.draftOrders.entry.filter(
       entry => entry.resource && (
         entry.resource.resourceType === 'MedicationRequest' ||
-        entry.resource.resourceType === 'MedicationOrder'
+        entry.resource.resourceType === 'MedicationOrder' ||
+        entry.resource.resourceType === 'ServiceRequest'
       )
     );
 
-    if (medicationOrders.length > 0) {
+    if (orders.length > 0) {
       const patientId = context.patientId || 'unknown-patient';
-      const firstOrder = medicationOrders[0].resource;
+      const firstOrder = orders[0].resource;
+      const orderType = firstOrder.resourceType;
+      
+      // Extract order code and display
+      let orderCode = 'N/A';
+      let orderDisplay = 'N/A';
+      
+      if (orderType === 'ServiceRequest' && firstOrder.code) {
+        const coding = firstOrder.code.coding?.[0];
+        if (coding) {
+          orderCode = coding.code;
+          orderDisplay = coding.display || orderCode;
+        }
+      } else if ((orderType === 'MedicationRequest' || orderType === 'MedicationOrder') && firstOrder.medicationCodeableConcept) {
+        const coding = firstOrder.medicationCodeableConcept.coding?.[0];
+        if (coding) {
+          orderCode = coding.code;
+          orderDisplay = coding.display || orderCode;
+        }
+      }
       
       // Add CRD Coverage Requirements Card with extensions
+      const isServiceRequest = orderType === 'ServiceRequest';
+      
       cards.push({
         uuid: 'crd-coverage-001',
         summary: 'Prior Authorization Required',
-        detail: 'This medication requires prior authorization. Coverage is conditional pending authorization.',
+        detail: isServiceRequest 
+          ? `This service (${orderDisplay}) requires prior authorization. Coverage is conditional pending authorization.`
+          : 'This medication requires prior authorization. Coverage is conditional pending authorization.',
         source: {
           label: 'Mock Payer CDS Service',
           url: 'http://localhost:3001',
@@ -202,11 +226,13 @@ app.post('/cds-services/medication-order-sign-advisor', (req, res) => {
         ]
       });
 
-      // Add an informational card for covered medications
+      // Add an informational card for covered orders
       cards.push({
-        uuid: 'medication-sign-info-001',
-        summary: 'Medication Coverage Information',
-        detail: `You are about to sign ${medicationOrders.length} medication order(s). Coverage verification completed.`,
+        uuid: 'order-sign-info-001',
+        summary: isServiceRequest ? 'Service Coverage Information' : 'Medication Coverage Information',
+        detail: isServiceRequest
+          ? `You are about to sign ${orders.length} service order(s). Coverage verification completed for ${orderDisplay}.`
+          : `You are about to sign ${orders.length} medication order(s). Coverage verification completed.`,
         source: {
           label: 'Mock Payer CDS Service',
           url: 'http://localhost:3001'
